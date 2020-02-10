@@ -1,0 +1,68 @@
+{% load static %}
+
+{#导航栏#}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand ml-5" href="{% url 'home' %}">
+      <img src="{% static 'bootstrap-4.3.1/icons/blog_48px.net.ico' %}" class="d-inline-block align-top" width="30" height="30" alt="Blog">
+  </a>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'home' %}">首页 <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'comments:tome' %}">给我留言 <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+
+      {% if user.is_authenticated %}
+          <div class="dropdown mr-5">
+              <a class="dropdown-toggle" href="#" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;font-size: 16px;text-decoration: none;">
+
+                  {{ user.username }}
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu">
+                <a class="dropdown-item" href="#">通知</a>
+                <a class="dropdown-item" href="{% url 'article:article_create' %}">写文章</a>
+                <div class="dropdown-divider"></div>
+
+                <!-- 模态框 -->
+                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#LogoutModal" >退出登录</a>
+
+              </div>
+          </div>
+      {% else %}
+          <a href="{% url 'account_login' %}" class="mr-5" style="color: white;text-decoration: none;font-size: 16px;">登录</a>
+      {% endif %}
+
+
+     <!-- Modal -->
+      <!-- 切记，模态框尽量放在 body 下，以免发生错误 -->
+    <div class="modal fade show " id="LogoutModal" tabindex="-1" role="dialog" aria-labelledby="LogoutModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="LogoutModalLabel">Sign Out</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>确定要退出登录吗 =*.*=</p>
+          </div>
+          <div class="modal-footer">
+              <form method="post" action="{% url 'account_logout' %}">
+                  {% csrf_token %}
+                    {% if redirect_field_value %}
+                      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                    {% endif %}
+                  <button type="submit" class="btn btn-primary">Sign Out</button>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</nav>

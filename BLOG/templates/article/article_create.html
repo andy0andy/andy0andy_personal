@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    创建文章
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+{#表单必须设置 enctype="multipart/form-data" 才能上传图片，该死不能再忘了#}
+    <form action="{% url 'article:article_create' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="col-md-8 form-group">
+                <label for="articletitle">标题</label>
+                <input type="text" class="form-control" id="articletitle" name="title">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="articletitleimg">标题图</label>
+                <input type="file" class="form-control-file" id="articletitleimg" name="title_img">
+            </div>
+            <div class="form-group">
+                <label for="articletags">标签</label>
+                <input type="text" id="articletags" name="tags" class="form-control">
+            </div>
+            <div class="form-group col-md-12">
+                <label for="articlebody">正文</label>
+               <textarea name="body" id="articlebody" class="form-control" cols="30" rows="10">{{ article.body }}</textarea>
+            </div>
+        </div>
+        <input type="submit" class="btn btn-primary">
+    </form>
+</div>
+
+{% endblock %}

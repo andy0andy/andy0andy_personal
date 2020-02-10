@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+    文章列表
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+
+        <!--面包屑导航-->
+        <nav aria-label="breadcrumb">
+
+            <!--最新/最热-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'article:article_list' %}?search={{ search }}&tag={{ tag }}">
+                        最新
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'article:article_list' %}?order=article_hot&search={{ search }}&tag={{ tag }}">
+                        最热
+                    </a>
+                </li>
+            </ol>
+
+             <!--搜索-->
+            <div class="col-auto mr-auto float-right" style="margin-top: -60px;">
+                <form class="form-inline" >
+                    <label class="sr-only">content</label>
+                    <input type="text"
+                        class="form-control mb-2 mr-sm-2"
+                        name="search"
+                        placeholder="Search..."
+                        required
+                    >
+                    <button type="submit" style="width: 36px;height:36px;margin-left: -45px;margin-top: -8px;">
+                        <img src="{% static 'bootstrap-4.3.1/icons/search.svg' %}" alt="search" style="width: 24px;">
+                    </button>
+                </form>
+            </div>
+
+        </nav>
+
+        <div class="row">
+
+            <!--文章主体-->
+            <div class="col-md-9">
+
+                {% for article in articles %}
+                    <div class="card mb-3" style="width: 100%;height: 180px;border-radius: 20px;">
+                      <div class="row no-gutters">
+                        <div class="col-md-3">
+                            <a href="{% url 'article:article_detail' article.id %}"><img src="{{ article.title_img.url }}" class="card-img" alt="..." style="width: 200px;height: 180px;border-radius: 20px;"></a>
+                        </div>
+
+                        <div class="col-md-9">
+                          <div class="card-body position-relative" style="height: 100%;">
+                            <p class="card-text font-weight-bold">
+                                <a href="{% url 'article:article_detail' article.id %}">{{ article.title }}</a>
+                                <span>
+
+                                    {% for tag in article.tags.all %}
+                                        <a href="{% url 'article:article_list' %}?tag={{ tag }}" class="badge badge-secondary">{{ tag }}</a>
+                                    {% endfor %}
+
+                                </span>
+                            </p>
+                            <p class="card-text">{{ article.body|slice:'80'|safe }}</p>
+
+                            <p class="card-text position-absolute" style="bottom: 5px;">
+                                <small class="text-primary"><img src="{% static 'bootstrap-4.3.1/icons/作者审核.svg' %}" width="15px;" alt="..."> {{ article.author }}</small>
+                                <small class="text-muted"><img src="{% static 'bootstrap-4.3.1/icons/时间.svg' %}" width="15px;" alt="..."> {{ article.updated|date:"Y年m月d日" }}</small>
+                                <small class="text-muted"><img src="{% static 'bootstrap-4.3.1/icons/浏览.svg' %}" width="18px;" alt="..."> {{ article.looks }}</small>
+                                <small class="text-muted"><img src="{% static 'bootstrap-4.3.1/icons/点赞.svg' %}" width="15px;" alt="..."> {{ article.likes }}</small>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                {% endfor %}
+
+
+            </div>
+
+            <!--侧边栏-->
+            <div class="col-md-3">
+
+                <!--博主动态-->
+                <div class="card">
+                  <h5 class="card-header font-weight-bolder">博主动态</h5>
+                  <div class="card-body">
+                    <p class="card-text font-weight-light">
+                        这我第一次做博客,我要做的更好. <br>
+                        奥利给 ╮（￣▽￣）╭
+                    </p>
+                  </div>
+                </div>
+
+
+
+            </div>
+
+        </div>
+
+        <!--分页-->
+        <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+          <ul class="pagination">
+            
+            {% if articles.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="{% url 'article:article_list' %}?page={{ articles.previous_page_number }}&order={{ order }}&search={{ search }}&tag={{ tag }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="{% url 'article:article_list' %}?page=1&order={{ order }}&search={{ search }}&tag={{ tag }}">首</a></li>
+                <li class="page-item"><a class="page-link" href="{% url 'article:article_list' %}?page={{ articles.previous_page_number }}&order={{ order }}&search={{ search }}&tag={{ tag }}">{{ articles.previous_page_number }}</a></li>
+            {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                     <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+            {% endif %}
+
+            <li class="page-item">
+                <a class="page-link" href="{% url 'article:article_list' %}?page={{ articles.number }}&order={{ order }}&search={{ search }}">{{ articles.number }}</a>
+            </li>
+            
+            {% if articles.has_next %}
+                <li class="page-item"><a class="page-link" href="{% url 'article:article_list' %}?page={{ articles.next_page_number }}&order={{ order }}&search={{ search }}&tag={{ tag }}">{{ articles.next_page_number }}</a></li>
+                <li class="page-item"><a class="page-link" href="{% url 'article:article_list' %}?page={{ articles.paginator.num_pages }}&order={{ order }}&search={{ search }}&tag={{ tag }}">尾</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="{% url 'article:article_list' %}?page={{ articles.next_page_number }}&order={{ order }}&search={{ search }}&tag={{ tag }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+            {% else %}
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+            {% endif %}
+
+          </ul>
+        </nav>
+
+    </div>
+
+{% endblock %}
