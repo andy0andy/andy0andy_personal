@@ -6,6 +6,7 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 import json
 from LiePin.items import LiepinItem
+import csv
 
 class LiepinPipeline(object):
     def __init__(self):

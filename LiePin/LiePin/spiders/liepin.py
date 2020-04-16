@@ -12,7 +12,7 @@ class LiepinSpider(CrawlSpider):
 
     rules = (
         # 分页
-        Rule(LinkExtractor(allow=r'.*/zhaopin/.+?&curPage=\d+'), follow=True),
+        Rule(LinkExtractor(allow=r'.*/zhaopin/.+?&curPage=\d+?'), follow=True),
         # 进一步爬取
         Rule(LinkExtractor(allow=r'.*https://www.liepin.com.+?\.shtml'), callback='parse_item', follow=False),
     )
@@ -28,7 +28,7 @@ class LiepinSpider(CrawlSpider):
         item['addr']=response.xpath("//div[@class='about-position']//p[@class='basic-infor']/span/a/text()").get(),
         item['fuli']=response.xpath("string(//div[@class='about-position']//ul[@class='comp-tag-list clearfix'])").get().replace("\r\n","").replace(" ",""),
         item['job_yaoqiu']=response.xpath("string(//div[@class='about-position']//div[@class='job-qualifications'])").get().replace("\r\n","").replace(" ",""),
-        item['job_content']=response.xpath("//div[@class='about-position']//div[@class='content content-word']/text()").get(),
+        item['job_content']=response.xpath("string(//div[@class='about-position']//div[@class='content content-word'])").get(),
 
         # print("2->",type(item))
         return item
